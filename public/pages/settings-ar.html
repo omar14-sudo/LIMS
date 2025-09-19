@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإعدادات - نظام إدارة المعامل</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+      padding-top: 20px;
+    }
+    .settings-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    .settings-section h3 {
+      border-bottom: 2px solid #0d6efd;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-save {
+      padding: 10px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 10px;
+    }
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .form-check-label {
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div id="header-container"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container py-4">
+    <h1 class="text-center mb-4">⚙️ الإعدادات</h1>
+
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        
+        <!-- قسم: تغيير كلمة المرور -->
+        <div class="settings-section">
+          <h3>🔐 تغيير كلمة المرور</h3>
+          <div class="success-message" id="passwordSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم تغيير كلمة المرور بنجاح!</strong>
+          </div>
+          <div class="error-message" id="passwordErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="passwordErrorText">--</span>
+          </div>
+          <form id="passwordForm">
+            <div class="mb-3">
+              <label class="form-label">كلمة المرور الحالية *</label>
+              <input type="password" class="form-control" name="currentPassword" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">كلمة المرور الجديدة *</label>
+              <input type="password" class="form-control" name="newPassword" required minlength="6">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تأكيد كلمة المرور الجديدة *</label>
+              <input type="password" class="form-control" name="confirmPassword" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary btn-save">
+              <i class="fas fa-save me-2"></i> حفظ التغييرات
+            </button>
+          </form>
+        </div>
+
+        <!-- قسم: تغيير اللغة -->
+        <div class="settings-section">
+          <h3>🌐 تغيير اللغة</h3>
+          <div class="success-message" id="languageSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم تغيير اللغة بنجاح! سيتم إعادة تحميل الصفحة...</strong>
+          </div>
+          <form id="languageForm">
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="language" id="langAr" value="ar" checked>
+                <label class="form-check-label" for="langAr">
+                  <span class="badge bg-primary me-2">AR</span> العربية
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="language" id="langEn" value="en">
+                <label class="form-check-label" for="langEn">
+                  <span class="badge bg-secondary me-2">EN</span> English
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-save">
+              <i class="fas fa-language me-2"></i> تغيير اللغة
+            </button>
+          </form>
+        </div>
+
+        <!-- قسم: إعدادات النظام -->
+        <div class="settings-section">
+          <h3>📊 إعدادات النظام</h3>
+          <div class="success-message" id="systemSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم حفظ إعدادات النظام بنجاح!</strong>
+          </div>
+          <div class="error-message" id="systemErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="systemErrorText">--</span>
+          </div>
+          <form id="systemForm">
+            <div class="mb-3">
+              <label class="form-label">العملة الافتراضية</label>
+              <select class="form-select" name="currency">
+                <option value="EGP" selected>جنيه مصري (ج.م)</option>
+                <option value="USD">دولار أمريكي ($)</option>
+                <option value="EUR">يورو (€)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تنسيق التاريخ</label>
+              <select class="form-select" name="dateFormat">
+                <option value="dd/mm/yyyy" selected>يوم/شهر/سنة (01/01/2025)</option>
+                <option value="yyyy-mm-dd">سنة-شهر-يوم (2025-01-01)</option>
+                <option value="mm/dd/yyyy">شهر/يوم/سنة (01/01/2025)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">عدد العناصر في الصفحة (التقارير)</label>
+              <select class="form-select" name="itemsPerPage">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <div class="mb-3 form-check">
+              <input class="form-check-input" type="checkbox" name="darkMode" id="darkMode">
+              <label class="form-check-label" for="darkMode">
+                <i class="fas fa-moon me-1"></i> تمكين الوضع الداكن
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-save">
+              <i class="fas fa-save me-2"></i> حفظ الإعدادات
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- الفوتر -->
+  <div id="footer-container"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- تحميل الهيدر والفوتر -->
+  <script src="/js/layout-loader.js"></script>
+
+  <!-- منطق الإعدادات -->
+  <script src="/js/settings.js"></script>
+</body>
+</html>

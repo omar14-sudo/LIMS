@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النسخ الاحتياطي - نظام إدارة المعامل</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+      padding-top: 20px;
+    }
+    .backup-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    .backup-section h3 {
+      border-bottom: 2px solid #0d6efd;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-backup {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 10px;
+    }
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .backup-item {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #0d6efd;
+    }
+    .backup-item h5 {
+      margin-bottom: 0.5rem;
+    }
+    .backup-item p {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .restore-btn, .delete-btn {
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      margin: 0 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div id="header-container"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container py-4">
+    <h1 class="text-center mb-4">💾 النسخ الاحتياطي والاستعادة</h1>
+
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        
+        <!-- قسم: إنشاء نسخة احتياطية -->
+        <div class="backup-section">
+          <h3>📤 إنشاء نسخة احتياطية</h3>
+          <div class="success-message" id="backupSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم إنشاء النسخة الاحتياطية بنجاح!</strong>
+          </div>
+          <div class="error-message" id="backupErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="backupErrorText">--</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">اسم النسخة الاحتياطية</label>
+            <input type="text" class="form-control" id="backupName" placeholder="أدخل اسمًا للنسخة الاحتياطية">
+          </div>
+          <button id="createBackupBtn" class="btn btn-primary btn-backup">
+            <i class="fas fa-download me-2"></i> إنشاء نسخة احتياطية الآن
+          </button>
+        </div>
+
+        <!-- قسم: جدولة النسخ الاحتياطي -->
+        <div class="backup-section">
+          <h3>⏰ جدولة النسخ الاحتياطي التلقائي</h3>
+          <div class="success-message" id="scheduleSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم حفظ جدولة النسخ الاحتياطي بنجاح!</strong>
+          </div>
+          <div class="error-message" id="scheduleErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="scheduleErrorText">--</span>
+          </div>
+          <form id="scheduleForm">
+            <div class="mb-3">
+              <label class="form-label">تكرار النسخ الاحتياطي</label>
+              <select class="form-select" name="frequency">
+                <option value="daily">يوميًا</option>
+                <option value="weekly">أسبوعيًا</option>
+                <option value="monthly">شهريًا</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">وقت النسخ الاحتياطي</label>
+              <input type="time" class="form-control" name="backupTime" value="02:00">
+            </div>
+            <div class="mb-3 form-check">
+              <input class="form-check-input" type="checkbox" name="autoBackup" id="autoBackup" checked>
+              <label class="form-check-label" for="autoBackup">
+                <i class="fas fa-robot me-1"></i> تمكين النسخ الاحتياطي التلقائي
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-backup">
+              <i class="fas fa-save me-2"></i> حفظ الجدولة
+            </button>
+          </form>
+        </div>
+
+        <!-- قسم: استعادة من نسخة احتياطية -->
+        <div class="backup-section">
+          <h3>📥 استعادة من نسخة احتياطية</h3>
+          <div class="success-message" id="restoreSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم استعادة النظام بنجاح! سيتم إعادة تشغيل السيرفر...</strong>
+          </div>
+          <div class="error-message" id="restoreErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="restoreErrorText">--</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">اختر نسخة احتياطية للاستعادة</label>
+            <select class="form-select" id="restoreSelect">
+              <option value="">جار التحميل...</option>
+            </select>
+          </div>
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>تحذير:</strong> عملية الاستعادة ستستبدل جميع بيانات النظام الحالية بالبيانات من النسخة الاحتياطية المحددة.
+          </div>
+          <button id="restoreBackupBtn" class="btn btn-danger btn-backup" disabled>
+            <i class="fas fa-upload me-2"></i> استعادة الآن
+          </button>
+        </div>
+
+        <!-- قسم: سجل النسخ الاحتياطية -->
+        <div class="backup-section">
+          <h3>📋 سجل النسخ الاحتياطية</h3>
+          <div id="backupsList">
+            <!-- سيتم تعبئته ديناميكيًا -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- الفوتر -->
+  <div id="footer-container"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- تحميل الهيدر والفوتر -->
+  <script src="/js/layout-loader.js"></script>
+
+  <!-- منطق النسخ الاحتياطي -->
+  <script src="/js/backup.js"></script>
+</body>
+</html>

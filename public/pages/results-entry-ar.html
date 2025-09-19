@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدخال نتائج التحاليل - نظام إدارة المعامل</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    main {
+      flex: 1;
+      padding-top: 20px;
+    }
+    .hero-section {
+      text-align: center;
+      padding: 2rem;
+      color: white;
+      margin-bottom: 2rem;
+    }
+    .hero-section h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .hero-section p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .samples-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    .samples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .sample-card {
+      border: 2px solid #f0f0f0;
+      border-radius: 15px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: #fafafa;
+      text-align: center;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .sample-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-color: #007bff;
+    }
+    .sample-card h4 {
+      color: #007bff;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+    .sample-card p {
+      margin: 0.3rem 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .sample-card .status {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    .modal-content {
+      border-radius: 20px;
+    }
+    .modal-header {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .modal-body {
+      padding: 2rem;
+    }
+    .result-field {
+      margin-bottom: 1.5rem;
+    }
+    .result-field label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .result-field input, .result-field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      transition: border-color 0.3s;
+    }
+    .result-field input:focus, .result-field textarea:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    .btn-save, .btn-print {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      margin: 5px;
+    }
+    .btn-save {
+      background: #007bff;
+      color: white;
+      border: none;
+    }
+    .btn-save:hover {
+      background: #0056b3;
+    }
+    .btn-print {
+      background: #28a745;
+      color: white;
+      border: none;
+    }
+    .btn-print:hover {
+      background: #1e7e34;
+    }
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .no-samples {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #6c757d;
+    }
+    .no-samples i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    @media (max-width: 768px) {
+      .samples-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div id="header-container"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container py-4">
+    <!-- قسم البانر -->
+    <div class="hero-section">
+      <h1>📝 إدخال نتائج التحاليل</h1>
+      <p>اختر عينة من القائمة، وأدخل نتائج التحليل في الحقول المخصصة</p>
+    </div>
+
+    <!-- قسم العينات -->
+    <div class="samples-section">
+      <h2 class="text-center mb-4">📋 العينات الجاهزة للإدخال</h2>
+      <div class="samples-grid" id="samplesContainer">
+        <!-- سيتم تعبئته ديناميكيًا -->
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">جار التحميل...</span>
+          </div>
+          <p class="mt-3">جار تحميل العينات...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- الفوتر -->
+  <div id="footer-container"></div>
+
+  <!-- Modal: إدخال النتائج -->
+  <div class="modal fade" id="resultsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">🧪 إدخال نتائج العينة #<span id="modalSampleId">--</span></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="success-message" id="modalSuccessMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>تم حفظ النتيجة بنجاح!</strong>
+          </div>
+          <div class="error-message" id="modalErrorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>خطأ:</strong> <span id="modalErrorText">--</span>
+          </div>
+
+          <div class="sample-info mb-4">
+            <h4>معلومات العينة</h4>
+            <p><strong>اسم المريض:</strong> <span id="modalPatientName">--</span></p>
+            <p><strong>نوع التحليل:</strong> <span id="modalTestName">--</span></p>
+            <p><strong>تاريخ أخذ العينة:</strong> <span id="modalCollectionDate">--</span></p>
+          </div>
+
+          <form id="modalResultsForm">
+            <div id="modalResultFieldsContainer">
+              <!-- سيتم تعبئته ديناميكيًا -->
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-save">
+                <i class="fas fa-save me-2"></i> حفظ النتيجة
+              </button>
+              <button type="button" class="btn btn-print" id="modalPrintBtn" style="display: none;">
+                <i class="fas fa-print me-2"></i> طباعة التقرير
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- تحميل الهيدر والفوتر -->
+  <script src="/js/layout-loader.js"></script>
+
+  <!-- منطق إدخال النتائج -->
+  <script src="/js/results-entry.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقرير نتائج التحليل</title>
+  <!-- CSP to allow local images and external CDNs -->
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: https://cdnjs.cloudflare.com; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts (Roboto Condensed) -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto Condensed', sans-serif;
+      background: linear-gradient(135deg, #e6f0fa, #ffffff);
+      color: #333;
+      padding: 20px;
+    }
+    .report-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border: 2px solid #007bff;
+    }
+    .report-header {
+      text-align: center;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .report-header img {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+    .report-header h1 {
+      font-size: 22px;
+      color: #007bff;
+      margin: 0;
+    }
+    .contact-info {
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+    }
+    .patient-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .patient-info .row {
+      font-size: 14px;
+    }
+    .patient-info strong {
+      color: #007bff;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .results-table th,
+    .results-table td {
+      border: 1px solid #dee2e6;
+      padding: 8px;
+      text-align: left;
+    }
+    .results-table th {
+      background: #007bff;
+      color: #fff;
+      font-weight: 700;
+    }
+    .results-table td {
+      background: #fff;
+    }
+    .notes-section {
+      background: #e9f7ef;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .qr-section {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .qr-section img {
+      border: 2px solid #007bff;
+      border-radius: 5px;
+      padding: 5px;
+      background: #fff;
+    }
+    .stamp {
+      text-align: center;
+      margin: 20px auto;
+      color: #dc3545;
+      font-weight: bold;
+      font-size: 16px;
+      border: 2px dashed #dc3545;
+      padding: 10px;
+      border-radius: 8px;
+      width: 180px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #777;
+      margin-top: 20px;
+    }
+    .action-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .action-buttons button {
+      padding: 8px 16px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .print-btn {
+      background: #007bff;
+      color: #fff;
+    }
+    .print-btn:hover {
+      background: #0056b3;
+    }
+    .toggle-header-btn {
+      background: #6c757d;
+      color: #fff;
+    }
+    .toggle-header-btn:hover {
+      background: #5a6268;
+    }
+    .hidden-header .report-header {
+      display: none;
+    }
+    @media print {
+      .action-buttons {
+        display: none;
+      }
+      .report-container {
+        box-shadow: none;
+        border: none;
+      }
+      body {
+        background: none;
+      }
+      .hidden-header .report-header {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="report-container" id="reportContainer">
+    <!-- Report Header -->
+    <div class="report-header" id="reportHeader">
+      <img src="/images/logo.png" alt="شعار المعمل">
+      <h1>Medical Laboratory Report</h1>
+      <p>Sample ID: <span id="printSampleId">--</span></p>
+      <p class="contact-info">
+        Medical Laboratory<br>
+        Email: <a href="mailto:EINESTIN7@GMAIL.COM">EINESTIN7@GMAIL.COM</a><br>
+        Phone: 01003253425
+      </p>
+    </div>
+
+    <!-- Patient Information -->
+    <div class="patient-info">
+      <div class="row">
+        <div class="col-md-4"><strong>اسم المريض:</strong> <span id="printPatientName">--</span></div>
+        <div class="col-md-4"><strong>الرقم القومي:</strong> <span id="printNationalId">--</span></div>
+        <div class="col-md-4"><strong>نوع التحليل:</strong> <span id="printTestName">--</span></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6"><strong>تاريخ أخذ العينة:</strong> <span id="printCollectionDate">--</span></div>
+        <div class="col-md-6"><strong>تاريخ إصدار التقرير:</strong> <span id="printReportDate">--</span></div>
+      </div>
+    </div>
+
+    <!-- Test Results -->
+    <table class="results-table">
+      <thead>
+        <tr>
+		  <th>Unit</th>
+		  <th>Reference Range</th>
+		   <th>Result</th>
+          <th>Test Name</th>
+        </tr>
+      </thead>
+      <tbody id="printResultsBody"></tbody>
+    </table>
+
+    <!-- General Notes -->
+    <div id="generalNotes" class="notes-section" style="display: none;"></div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+      <p>امسح الكود للتحقق من صحة التقرير</p>
+      <div id="qrcode"></div>
+    </div>
+
+    <!-- Lab Stamp -->
+    <div class="stamp">Lab Stamp</div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Issued by Laboratory Management System
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button id="btnPrint" class="print-btn">
+        <i class="fas fa-print"></i> طباعة
+      </button>
+      <button id="btnToggleHeader" class="toggle-header-btn">
+        <i class="fas fa-eye-slash"></i> إخفاء/إظهار الهيدر
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/js/print-report.js"></script>
+</body>
+</html>

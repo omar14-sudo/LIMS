@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التقارير التشغيلية - نظام إدارة المعامل</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+      padding-top: 20px;
+    }
+    .filter-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .btn-export {
+      padding: 10px 20px;
+      font-weight: 600;
+      border-radius: 10px;
+    }
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      font-weight: 700;
+      border-right: 4px solid #0d6efd;
+      padding-right: 15px;
+      margin: 2rem 0 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div id="header-container"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container py-4">
+    <h1 class="text-center mb-4">📈 التقارير التشغيلية</h1>
+
+    <!-- قسم الفلاتر -->
+    <div class="mb-3">
+  <label for="startDate" class="form-label">من تاريخ</label>
+  <input type="date" class="form-control" id="startDate">
+</div>
+<div class="mb-3">
+  <label for="endDate" class="form-label">إلى تاريخ</label>
+  <input type="date" class="form-control" id="endDate">
+</div>
+<div class="mb-3">
+  <button id="generateReportBtn" class="btn btn-primary">عرض التقرير</button>
+</div>
+<div class="mb-3">
+  <button id="exportPdfBtn" class="btn btn-secondary">تصدير PDF</button>
+  <button id="exportExcelBtn" class="btn btn-secondary">تصدير Excel</button>
+</div>
+
+    <!-- الإحصائيات الأساسية -->
+    <h3 class="section-title">📊 الإحصائيات الأساسية</h3>
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card stat-card bg-primary text-white">
+          <div class="card-body text-center">
+            <h5>إجمالي العينات</h5>
+            <h2 id="totalSamples">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stat-card bg-success text-white">
+          <div class="card-body text-center">
+            <h5>متوسط وقت التسليم (ساعة)</h5>
+            <h2 id="avgTurnaround">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card stat-card bg-info text-white">
+          <div class="card-body text-center">
+            <h5>نسبة الإنجاز</h5>
+            <h2 id="completionRate">0%</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- الرسم البياني لأداء الفنيين -->
+    <h3 class="section-title">👨‍🔬 أداء الفنيين</h3>
+    <div class="chart-container">
+      <canvas id="techniciansChart"></canvas>
+    </div>
+
+    <!-- الرسم البياني للتحاليل الأكثر طلبًا -->
+    <h3 class="section-title">🧪 التحاليل الأكثر طلبًا</h3>
+    <div class="chart-container">
+      <canvas id="popularTestsChart"></canvas>
+    </div>
+
+    <!-- جدول تفاصيل أداء الفنيين -->
+    <h3 class="section-title">📋 تفاصيل أداء الفنيين</h3>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>اسم الفني</th>
+                <th>عدد العينات</th>
+                <th>متوسط وقت التسليم</th>
+                <th>نسبة الإنجاز</th>
+              </tr>
+            </thead>
+            <tbody id="techniciansTableBody">
+              <tr>
+                <td colspan="4" class="text-center">اختر نطاق تاريخي ثم اضغط "عرض التقرير"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- الفوتر -->
+  <div id="footer-container"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+
+  <!-- تحميل الهيدر والفوتر -->
+  <script src="/js/layout-loader.js"></script>
+
+  <!-- منطق التقارير التشغيلية -->
+  <script src="/js/operational-reports.js"></script>
+</body>
+</html>

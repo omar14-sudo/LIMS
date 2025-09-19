@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإشعارات - نظام إدارة المعامل</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+      padding-top: 20px;
+    }
+    .notification-card {
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    .notification-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .notification-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .notification-body {
+      padding: 1.5rem;
+    }
+    .notification-footer {
+      padding: 0.75rem 1.5rem;
+      background-color: #f8f9fa;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    .badge-warning { background-color: #ffc107; color: #000; }
+    .badge-info { background-color: #17a2b8; }
+    .badge-danger { background-color: #dc3545; }
+    .badge-success { background-color: #28a745; }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .mark-btn, .delete-btn {
+      padding: 5px 10px;
+      font-size: 0.85rem;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #6c757d;
+    }
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر -->
+  <div id="header-container"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">🔔 الإشعارات</h1>
+      <div class="btn-group">
+        <button class="btn btn-outline-secondary" onclick="filterNotifications('all')">
+          الكل
+        </button>
+        <button class="btn btn-outline-warning" onclick="filterNotifications('warning')">
+          <i class="fas fa-exclamation-triangle"></i> تحذيرات
+        </button>
+        <button class="btn btn-outline-info" onclick="filterNotifications('info')">
+          <i class="fas fa-info-circle"></i> معلومات
+        </button>
+        <button class="btn btn-outline-danger" onclick="filterNotifications('urgent')">
+          <i class="fas fa-bell"></i> عاجل
+        </button>
+      </div>
+    </div>
+
+    <!-- أزرار التحكم -->
+    <div class="d-flex justify-content-end mb-4">
+      <button class="btn btn-outline-primary me-2" onclick="markAllAsRead()">
+        <i class="fas fa-check-double"></i> تمييز الكل كمقروء
+      </button>
+      <button class="btn btn-outline-danger" onclick="clearAllNotifications()">
+        <i class="fas fa-trash-alt"></i> مسح الكل
+      </button>
+    </div>
+
+    <!-- قائمة الإشعارات -->
+    <div id="notificationsContainer">
+      <!-- سيتم تعبئته ديناميكيًا -->
+    </div>
+  </main>
+
+  <!-- الفوتر -->
+  <div id="footer-container"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- تحميل الهيدر والفوتر -->
+  <script src="/js/layout-loader.js"></script>
+
+  <!-- منطق الإشعارات -->
+  <script src="/js/notifications.js"></script>
+</body>
+</html>
